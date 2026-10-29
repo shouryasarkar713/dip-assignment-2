@@ -1,0 +1,2 @@
+# Store files byte-for-byte so a clone matches SHA256SUMS.txt on every platform.
+* -text

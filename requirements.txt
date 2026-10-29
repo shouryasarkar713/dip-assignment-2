@@ -1,0 +1,10 @@
+# Runtime (experiments, tests, report build)
+numpy>=2.0
+scipy>=1.11          # checks only (gaussian_filter, sici, label, fftconvolve, next_fast_len)
+matplotlib>=3.8
+Pillow>=10.0
+python-docx>=1.0     # DOCX report
+# Optional external checks (tests skip gracefully if missing)
+scikit-image>=0.22   # SSIM cross-check only
+# PDF report: a LaTeX installation providing pdflatex with: amsmath, amssymb, graphicx, booktabs, longtable, array, float, xcolor, hyperref, geometry, lmodern
+#   (TinyTeX 2024 was used)
