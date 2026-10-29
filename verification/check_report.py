@@ -111,8 +111,11 @@ def main():
     cp = d.core_properties
     chk("DOCX core properties: title and author set", bool(cp.title) and cp.author == "Shourya Sarkar", "title=%r author=%r" % (cp.title, cp.author))
     h1 = [b[1] for b in blocks if b[0] == "h1"]
-    chk("top-level sections: 0, Questions 1-6, then 7 (no section 8 or 9 remains)", h1[1].startswith("0. ") and h1[-1].startswith("7. ") and not any(re.match(r"[89]\. ", h) for h in h1), "; ".join(h[:14] for h in h1))
-    chk("no stale 'Section 8' or 'Section 9' reference in the PDF text", re.search(r"Section\s+[89]\b", pdf_text) is None)
+    chk("top-level sections: 0, Questions 1-6, 7 (conclusions), 8 (code and reproducibility); no section 9", h1[1].startswith("0. ") and h1[-2].startswith("7. ") and h1[-1].startswith("8. ") and not any(re.match(r"9\. ", h) for h in h1), "; ".join(h[:14] for h in h1))
+    chk("no stale 'Section 9' reference in the PDF text", re.search(r"Section\s+9\b", pdf_text) is None)
+    url = "https://github.com/shouryasarkar713/dip-assignment-2"
+    chk("repository URL appears in the PDF and in the DOCX", norm(url) in pdf_norm and norm(url) in norm(docx_all))
+    chk("repository URL in the report equals the README repository URL", url in open(os.path.join(ROOT, "README.md"), encoding="utf-8").read())
     flat = pdf_text.replace("\n", " ")
     chk("scope statement (Questions 1-6; Question 7 not part of the submission) in PDF", "Questions 1-6" in flat and "Question 7" in flat and "not part of this submission" in flat)
     # key numbers from the JSON
