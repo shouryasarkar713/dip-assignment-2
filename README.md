@@ -2,7 +2,7 @@
 
 Student: Shourya Sarkar, roll number 2023112013.
 Scope: Questions 1-6 of the assignment sheet. Question 7 is not part of this submission.
-Repository: https://github.com/shouryasarkar713/dip-assignment-2 (private; access must be requested from the author).
+Repository (public): https://github.com/shouryasarkar713/dip-assignment-2
 
 ## Contents
 | Path | Contents |

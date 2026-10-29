@@ -115,6 +115,11 @@ def main():
     chk("no stale 'Section 9' reference in the PDF text", re.search(r"Section\s+9\b", pdf_text) is None)
     url = "https://github.com/shouryasarkar713/dip-assignment-2"
     chk("repository URL appears in the PDF and in the DOCX", norm(url) in pdf_norm and norm(url) in norm(docx_all))
+    pdf_links = [l.get("uri") for p in doc for l in p.get_links() if l.get("uri")]
+    with zipfile.ZipFile(docx_p) as zf:
+        rels = zf.read("word/_rels/document.xml.rels").decode("utf-8")
+    chk("repository URL is a clickable link in the PDF and in the DOCX", url in pdf_links and ('Target="%s"' % url) in rels and "TargetMode=\"External\"" in rels, "pdf links: %s" % pdf_links)
+    chk("report describes the repository as public (no private/access-request wording)", "publicly available" in pdf_text.replace("-\n", "").replace("\n", " ") and "private" not in pdf_text.lower() and "access must" not in pdf_text.lower())
     chk("repository URL in the report equals the README repository URL", url in open(os.path.join(ROOT, "README.md"), encoding="utf-8").read())
     flat = pdf_text.replace("\n", " ")
     chk("scope statement (Questions 1-6; Question 7 not part of the submission) in PDF", "Questions 1-6" in flat and "Question 7" in flat and "not part of this submission" in flat)

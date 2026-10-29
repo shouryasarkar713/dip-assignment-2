@@ -37,8 +37,8 @@ def closing(R):
         "**Timings.** Wall-clock timings depend on the hardware (Table 0.1) and are reported for orientation only.",
     ]))
     B.append(("h1", "8. Code and reproducibility"))
-    B.append(("p", "Source code, experiment scripts, data-processing utilities and reproducibility instructions are available in the project repository:"))
+    B.append(("p", "The source code, experiment scripts, data-processing utilities, results and reproducibility instructions are publicly available in the project repository:"))
     B.append(("p", "`https://github.com/shouryasarkar713/dip-assignment-2`"))
-    B.append(("p", "The repository is private; access must be requested from the author. It contains the implementation of each question (`src/`), the input data and photographs (`data/`), the result files (`results/`), the figures (`figures/`), the tests (`tests/`) and the sources of this report (`report/`)."))
+    B.append(("p", "The repository contains the implementation of each question (`src/`), the input data and photographs (`data/`), the result files (`results/`), the figures (`figures/`), the tests (`tests/`) and the sources of this report (`report/`)."))
     B.append(("p", "All random numbers come from `numpy.random.default_rng` with fixed seeds. `python run_all.py` regenerates the results and figures from the supplied inputs, and `python report/build_report.py` regenerates the PDF and DOCX report from them. On a different software stack the numbers can differ at floating-point rounding level."))
     return B

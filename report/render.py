@@ -166,6 +166,9 @@ UNI_TEX = {"×": r"$\times$", "≈": r"$\approx$", "≤": r"$\le$", "≥": r"$\g
            "²": r"$^2$", "⁻": r"$^-$", "¹": r"$^1$", "√": r"$\sqrt{}$", "δ": r"$\delta$", "Σ": r"$\Sigma$", "∂": r"$\partial$", "∇": r"$\nabla$", "✓": r"\checkmark{}", "‰": r"\textperthousand{}"}
 
 
+URL_RE = re.compile(r"https?://[A-Za-z0-9._~:/?\[\]@!$&'()*+,;=-]+")
+
+
 def tex_text(text):
     out = []
     for kind, st, bold, ital, code in inline_tokens(text):
@@ -175,6 +178,8 @@ def tex_text(text):
             t = "".join(TEX_ESC.get(c, UNI_TEX.get(c, c)) + (r"\allowbreak{}" if code and c in ",=/._(" else "") for c in st)
             if code:
                 t = r"\texttt{" + t + "}"   # \allowbreak lets long identifiers wrap instead of running into the margin
+                if URL_RE.fullmatch(st):
+                    t = r"\href{%s}{%s}" % (st, t)   # clickable link in the PDF
             if bold:
                 t = r"\textbf{" + t + "}"
             if ital:
@@ -345,6 +350,34 @@ def to_docx(blocks, path_docx, cache_dir):
             if kind == "math":
                 r = par.add_run(tex_to_text(st))
                 r.italic = True
+            elif c_ and URL_RE.fullmatch(st):
+                # clickable external hyperlink (blue, underlined, monospaced)
+                r_id = par.part.relate_to(st, "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink", is_external=True)
+                h = OxmlElement("w:hyperlink")
+                h.set(qn("r:id"), r_id)
+                h.set(qn("w:history"), "1")
+                wr = OxmlElement("w:r")
+                rpr = OxmlElement("w:rPr")
+                fonts = OxmlElement("w:rFonts")
+                fonts.set(qn("w:ascii"), "Consolas")
+                fonts.set(qn("w:hAnsi"), "Consolas")
+                col = OxmlElement("w:color")
+                col.set(qn("w:val"), "0563C1")
+                und = OxmlElement("w:u")
+                und.set(qn("w:val"), "single")
+                for el in (fonts, col, und):
+                    rpr.append(el)
+                if size:
+                    sz = OxmlElement("w:sz")
+                    sz.set(qn("w:val"), str(int(size * 2)))
+                    rpr.append(sz)
+                wr.append(rpr)
+                wt = OxmlElement("w:t")
+                wt.text = st
+                wr.append(wt)
+                h.append(wr)
+                par._p.append(h)
+                continue
             else:
                 r = par.add_run(st)
                 if i_:
